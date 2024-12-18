@@ -119,8 +119,17 @@ xsd:date rdf:type rdfs:Datatype .
 
 ###  https://w3id.org/cluedo4KG/onto#mort_associé_objet
 :mort_associé_objet rdf:type owl:ObjectProperty ;
+                    owl:inverseOf :objet_associé_mort ;
+                    rdf:type owl:FunctionalProperty ;
                     rdfs:domain :causeMort ;
                     rdfs:range :objetMobile .
+
+
+###  https://w3id.org/cluedo4KG/onto#mort_par_balle
+:mort_par_balle rdf:type owl:ObjectProperty ;
+                rdfs:subPropertyOf :mort_associé_objet ;
+                rdfs:domain :blessureParBalle ;
+                rdfs:range :armesAFeu .
 
 
 ###  https://w3id.org/cluedo4KG/onto#objetDansPiece
@@ -135,6 +144,11 @@ xsd:date rdf:type rdfs:Datatype .
                                rdfs:subPropertyOf :objet_possession_personne ;
                                rdfs:domain :Objet ;
                                rdfs:range :Personne .
+
+
+###  https://w3id.org/cluedo4KG/onto#objet_associé_mort
+:objet_associé_mort rdf:type owl:ObjectProperty ;
+                    rdfs:subPropertyOf owl:topObjectProperty .
 
 
 ###  https://w3id.org/cluedo4KG/onto#objet_possession_personne
@@ -332,6 +346,10 @@ xsd:date rdf:type rdfs:Datatype .
 
 ###  https://w3id.org/cluedo4KG/onto#armesAFeu
 :armesAFeu rdf:type owl:Class ;
+           owl:equivalentClass [ rdf:type owl:Class ;
+                                 owl:oneOf ( :Revolver_Python_357
+                                           )
+                               ] ;
            rdfs:subClassOf :armes .
 
 
@@ -344,7 +362,7 @@ xsd:date rdf:type rdfs:Datatype .
 :blessureParBalle rdf:type owl:Class ;
                   owl:equivalentClass [ rdf:type owl:Restriction ;
                                         owl:onProperty :mort_associé_objet ;
-                                        owl:allValuesFrom :armesAFeu
+                                        owl:someValuesFrom :armesAFeu
                                       ] ;
                   rdfs:subClassOf :blessures .
 
@@ -1094,6 +1112,12 @@ xsd:date rdf:type rdfs:Datatype .
               :objetDansPiece :Chambre .
 
 
+###  https://w3id.org/cluedo4KG/onto#armeCrime
+:armeCrime rdf:type owl:NamedIndividual ,
+                    :armeDuCrime ,
+                    :objetMobile .
+
+
 ###  https://w3id.org/cluedo4KG/onto#bistouri
 :bistouri rdf:type owl:NamedIndividual ,
                    :tranchant ;
@@ -1157,7 +1181,8 @@ xsd:date rdf:type rdfs:Datatype .
 
 ###  https://w3id.org/cluedo4KG/onto#uniqueCauseMort
 :uniqueCauseMort rdf:type owl:NamedIndividual ,
-                          :causeMort .
+                          :causeMort ;
+                 :mort_associé_objet :armeCrime .
 
 
 ###  https://w3id.org/cluedo4KG/onto#échafaud_pour_Peinture
