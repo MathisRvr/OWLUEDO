@@ -162,7 +162,7 @@ xsd:date rdf:type rdfs:Datatype .
 :personneDansPiece rdf:type owl:ObjectProperty ;
                    rdfs:subPropertyOf :personne_dans_lieu ;
                    owl:inverseOf :pieceContientPersonne ;
-                   owl:propertyChainAxiom ( :personne_possède_objet
+                   owl:propertyChainAxiom ( :personne_possede_actuellement_objet
                                             :objetDansPiece
                                           ) ;
                    rdfs:label "person in room"@en ,
@@ -171,7 +171,8 @@ xsd:date rdf:type rdfs:Datatype .
 
 ###  https://w3id.org/cluedo4KG/onto#personne_actuellement_dans_lieu
 :personne_actuellement_dans_lieu rdf:type owl:ObjectProperty ;
-                                 rdfs:subPropertyOf :personne_dans_lieu .
+                                 rdfs:subPropertyOf :personne_dans_lieu ;
+                                 owl:inverseOf :piece_contient_actuellement_personne .
 
 
 ###  https://w3id.org/cluedo4KG/onto#personne_actuellement_dans_pièce
@@ -226,6 +227,11 @@ xsd:date rdf:type rdfs:Datatype .
                             "room in house"@en .
 
 
+###  https://w3id.org/cluedo4KG/onto#piece_contient_actuellement_personne
+:piece_contient_actuellement_personne rdf:type owl:ObjectProperty ;
+                                      rdfs:subPropertyOf :pieceContientPersonne .
+
+
 ###  https://w3id.org/cluedo4KG/onto#piece_contient_zone
 :piece_contient_zone rdf:type owl:ObjectProperty ;
                      rdfs:subPropertyOf :lieu_contient_lieu ;
@@ -263,8 +269,8 @@ xsd:date rdf:type rdfs:Datatype .
                  rdfs:subPropertyOf :lieu_dans_lieu ;
                  rdfs:domain :zones ;
                  rdfs:range :Piece ;
-                 owl:propertyChainAxiom ( :objetDansPiece
-                                          :zone_autour_immobile
+                 owl:propertyChainAxiom ( :pieceContientObjet
+                                          :estCentreDe
                                         ) .
 
 
@@ -336,7 +342,7 @@ xsd:date rdf:type rdfs:Datatype .
 
 ###  https://w3id.org/cluedo4KG/onto#armeDuCrime
 :armeDuCrime rdf:type owl:Class ;
-             rdfs:subClassOf :armes .
+             rdfs:subClassOf :objetMobile .
 
 
 ###  https://w3id.org/cluedo4KG/onto#armes
@@ -412,13 +418,10 @@ xsd:date rdf:type rdfs:Datatype .
 
 ###  https://w3id.org/cluedo4KG/onto#lieuDuCrime
 :lieuDuCrime rdf:type owl:Class ;
-             owl:equivalentClass [ owl:intersectionOf ( :Piece
-                                                        [ rdf:type owl:Restriction ;
-                                                          owl:onProperty :pieceContientPersonne ;
-                                                          owl:someValuesFrom :victime
-                                                        ]
-                                                      ) ;
-                                   rdf:type owl:Class
+             owl:equivalentClass [ rdf:type owl:Restriction ;
+                                   owl:onProperty [ owl:inverseOf :personneDansPiece
+                                                  ] ;
+                                   owl:someValuesFrom :victime
                                  ] ;
              rdfs:subClassOf :lieux .
 
@@ -451,8 +454,9 @@ xsd:date rdf:type rdfs:Datatype .
                                                     ) ;
                                  rdf:type owl:Class
                                ] ,
-                               [ owl:intersectionOf ( [ rdf:type owl:Restriction ;
-                                                        owl:onProperty :personneDansPiece ;
+                               [ owl:intersectionOf ( :Personne
+                                                      [ rdf:type owl:Restriction ;
+                                                        owl:onProperty :personne_dans_lieu ;
                                                         owl:someValuesFrom :lieuDuCrime
                                                       ]
                                                       [ rdf:type owl:Restriction ;
